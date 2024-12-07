@@ -4,9 +4,6 @@ from datetime import datetime, timedelta
 from SCHEDULE.lib.util import MySQLOperator, MySQLReturnOperator
 from textwrap import dedent
 
-src_table = "OPERATION_MYSQL.PRESS.PRESS_RAW_DATA"
-stg_table = "DW_HIVE.STG.STG_PRESS_RAW_DATA"
-ods_table = "DL_ICEBERG.ODS.DS_PRESS_RAW_DATA"
 
 # 기본 인자 설정
 default_args = {
@@ -45,7 +42,7 @@ with (DAG(
 
     # 2. 적재
     insert_ods = MySQLOperator(
-        task_id='src_count',
+        task_id='insert_ods',
         pool=DEFAULT_POOL,
         priority_weight=1,
         query=f"""
@@ -60,7 +57,7 @@ with (DAG(
 
     # 3. 적재 카운트
     ods_count = MySQLReturnOperator(
-        task_id='src_count',
+        task_id='ods_count',
         pool=DEFAULT_POOL,
         priority_weight=1,
         query=f"""
