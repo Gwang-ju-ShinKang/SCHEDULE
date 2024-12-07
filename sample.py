@@ -35,7 +35,7 @@ with (DAG(
         priority_weight=1,
         query=f"""
         SELECT COUNT(*) 
-        FROM {src_table}
+        FROM SRC_TABLE
         """,
         do_xcom_push=True,
     )
