@@ -4,7 +4,6 @@ from datetime import datetime, timedelta
 from SCHEDULE.lib.util import MySQLOperator, MySQLReturnOperator
 from textwrap import dedent
 
-
 # 기본 인자 설정
 default_args = {
     'owner': 'gwang-ju',
