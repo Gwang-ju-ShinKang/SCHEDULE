@@ -1,13 +1,6 @@
 pipeline {
-
 	agent any
 	stages {
-		stage('[Schedule Sync] Start') {
-			steps {
-				sh 'echo "[Schedule Sync] Start"'
-				slackSend(channel: '#deployment-alert', color: '#00FF7F' , message: "[Schedule Sync] Start : Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
-			}
-		}
 		stage('[Schedule Sync] Git clone') {
                         steps {
                             script{
@@ -23,12 +16,5 @@ pipeline {
                             }
                         }
                 }
-		stage('[Schedule Sync] Done') {
-                        steps {
-				sh 'echo "[Schedule Sync] Done"'
-                                slackSend(channel: '#deployment-alert', color: '#00FF7F' , message: "[Schedule Sync] Done : Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
-			}
-                }
-
 	}
 }
