@@ -24,13 +24,13 @@ with DAG(
     source_table = "session_info"
     ods_table = "ds_session_info"
 
-    # 1. ODS 테이블 생성 (존재하지 않으면 생성)
+    # 1. ODS 테이블 삭제 후 재생성
     create_ods_table = MySqlOperator(
         task_id='create_ods_table',
-        mysql_conn_id='mysql_default',  # Airflow Connections에 설정된 MySQL 연결 ID
+        mysql_conn_id='mysql_default',
         sql=f"""
-            CREATE TABLE IF NOT EXISTS {ods_table}
-            LIKE {source_table};
+            DROP TABLE IF EXISTS {ods_table};
+            CREATE TABLE {ods_table} LIKE {source_table};
         """,
     )
 
@@ -60,7 +60,7 @@ with DAG(
         sql=f"""
             SELECT COUNT(*) FROM {source_table};
         """,
-        do_xcom_push=True,  # 결과를 XCom에 저장
+        do_xcom_push=True,
     )
 
     # 5. ODS 테이블 데이터 수 조회
@@ -70,14 +70,14 @@ with DAG(
         sql=f"""
             SELECT COUNT(*) FROM {ods_table};
         """,
-        do_xcom_push=True,  # 결과를 XCom에 저장
+        do_xcom_push=True,
     )
 
     # 6. 데이터 수 비교
     def compare_counts(**kwargs):
         ti = kwargs['ti']
-        source_count = ti.xcom_pull(task_ids='get_source_count')
-        ods_count = ti.xcom_pull(task_ids='get_ods_count')
+        source_count = ti.xcom_pull(task_ids='get_source_count')[0][0]  # XCom에서 첫 번째 결과를 가져옴
+        ods_count = ti.xcom_pull(task_ids='get_ods_count')[0][0]
         if source_count == ods_count:
             print(f"✅ 데이터 일치: 원천({source_count}) == ODS({ods_count})")
         else:
