@@ -37,7 +37,7 @@ with DAG(
         mysql_conn_id='mysql_default',
         sql=f"""
             DELETE FROM upload_info
-            WHERE created_at < NOW() - INTERVAL 2 MINUTE;
+            WHERE created_at < NOW() - INTERVAL 1 MONTH;
         """,
     )
 
